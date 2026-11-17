@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <title>AFTERNET</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/grid.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/market.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <!-- PixiJS v8 for the space-shooter runtime -->
+  <script src="https://cdn.jsdelivr.net/npm/pixi.js@8/dist/pixi.min.js"></script>
+</head>
+<body>
+
+  <!-- ===================================================================
+       TOP NAVIGATION
+       =================================================================== -->
+  <header class="top-nav" id="navBar">
+    <div class="nav-left">
+      <div class="logo">AFTERNET</div>
+    </div>
+
+    <div class="nav-center">
+      <button class="nav-btn active" data-view="hangar">HANGAR</button>
+      <button class="nav-btn" data-view="storage">STORAGE</button>
+      <button class="nav-btn" data-view="market">NETWORK</button>
+    </div>
+
+    <div class="nav-right">
+      <div class="currency-item">
+        <span class="currency-icon cr">CR</span>
+        <span class="currency-amount" id="currency-credits">0</span>
+      </div>
+      <div class="currency-item">
+        <span class="currency-icon it">IT</span>
+        <span class="currency-amount" id="currency-tokens">0</span>
+      </div>
+      <div class="currency-item">
+        <span class="currency-icon gc">GC</span>
+        <span class="currency-amount" id="currency-chips">0</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================================================================
+       MAIN CONTENT AREA
+       =================================================================== -->
+  <main class="game-container" id="uiRoot">
+
+    <!-- ================= HANGAR VIEW ================= -->
+    <div id="view-hangar" class="view active">
+
+      <!-- LEFT: Pilot Panel -->
+      <aside class="hangar-pilot-panel">
+        <div class="panel-header"><h2>PILOT DOSSIER</h2></div>
+        <div class="pilot-avatar">
+          <div class="avatar-circle">P1</div>
+          <div class="pilot-name">Cmdr. Shepard</div>
+          <div class="pilot-rank">Rank: Captain</div>
+        </div>
+        <div class="pilot-stats" id="pilotStats">
+          <div class="stat-row"><span class="stat-label">Successful Extractions</span><span class="stat-value">14</span></div>
+          <div class="stat-row"><span class="stat-label">Failed Expeditions</span><span class="stat-value text-danger">3</span></div>
+          <div class="stat-row"><span class="stat-label">Stash Value</span><span class="stat-value text-green">4,250 CR</span></div>
+        </div>
+        <div class="pilot-actions">
+          <button class="ready-btn" id="readyBtn">READY</button>
+        </div>
+      </aside>
+
+      <!-- RIGHT: Information Systems -->
+      <section class="hangar-ship-panel">
+        <div class="panel-header"><h2>INFORMATION SYSTEMS</h2></div>
+        <div class="info-systems-host" id="informationSystemsHost"></div>
+      </section>
+    </div>
+
+    <!-- ================= STORAGE VIEW ================= -->
+    
+    <div id="view-storage" class="view">
+      <section class="storage-grids-panel">
+
+        <!-- TOP — Loadout: console (left) + CD cargo (right) -->
+        <div class="storage-section">
+          <div class="storage-section-header">
+            <h3 id="selectedShipName">LOADOUT</h3>
+          </div>
+          <div class="loadout-columns">
+            <div class="loadout-column">
+              <div class="loadout-column-title">
+                <span>CONSOLE</span>
+                <div class="loadout-column-actions" id="consoleColumnActions"></div>
+              </div>
+              <div class="loadout-column-body">
+                <div id="consoleGridHost"></div>
+              </div>
+            </div>
+            <div class="loadout-column">
+              <div class="loadout-column-title">
+                <span id="cdColumnTitle">CD CARGO</span>
+                <div class="loadout-column-actions" id="cdColumnActions"></div>
+              </div>
+              <div class="loadout-column-body">
+                <div id="shipGridHost" class="grid-host-plain"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BOTTOM — Base Stash (unchanged) -->
+        <div class="storage-section">
+          <div class="storage-section-header">
+            <h3>BASE STASH</h3>
+            <div class="header-actions">
+              <button class="action-btn" id="organizeStashBtn">ORGANIZE</button>
+            </div>
+          </div>
+          <div id="stashGridHost" class="grid-host"></div>
+        </div>
+
+      </section>
+    </div>
+
+    <!-- ================= MARKET VIEW ================= -->
+<div id="view-market" class="view">
+  <div class="market-container">
+  <div class="market-tabs">
+    <button class="market-tab active" data-market="market">CONTACTS</button>
+    <button class="market-tab" data-market="black">BLACK MARKET <span class="tab-warning">⚠</span></button>
+    <button class="market-tab" data-market="crafting">CRAFTING</button>
+  </div>
+
+  <!-- CONTACTS PANEL -->
+  <div class="market-panel active" id="contactsPanel">
+    <aside class="trader-list">
+      <div class="panel-header"><h2>CONTACTS</h2></div>
+      <div class="trader-list-body" id="contactsListBody"></div>
+    </aside>
+    <section class="contact-main">
+      <div class="contact-header">
+        <div class="contact-header-left">
+          <h3 id="contactName">Select a contact</h3>
+          <div class="contact-tagline" id="contactTagline">—</div>
+          <div class="contact-description" id="contactDescription">—</div>
+        </div>
+        <div class="contact-header-right" id="contactRepInfo"></div>
+      </div>
+      <div class="contact-subtabs">
+        <button class="contact-subtab active" data-subtab="market">MARKET</button>
+        <button class="contact-subtab" data-subtab="missions">MISSIONS</button>
+        <button class="contact-subtab" data-subtab="contracts">CONTRACTS</button>
+      </div>
+      <div class="contact-content" id="contactContentBody"></div>
+    </section>
+  </div>
+
+  <!-- BLACK MARKET PANEL (unchanged) -->
+  <div class="market-panel" id="blackMarketPanel">
+    <div class="blackmarket-banner">
+      <div class="blackmarket-banner-left">
+        <div class="blackmarket-glyph">◈</div>
+        <div>
+          <div class="blackmarket-title">THE BLACK MARKET</div>
+          <div class="blackmarket-subtitle">Unregistered. Untraceable. Unforgiving.</div>
+        </div>
+      </div>
+      <div class="blackmarket-timer">
+        <div class="blackmarket-timer-label">DISAPPEARS IN</div>
+        <div class="blackmarket-timer-value" id="blackMarketTimer">—</div>
+      </div>
+    </div>
+    <div class="blackmarket-items" id="blackMarketItems"></div>
+  </div>
+
+  <!-- CRAFTING PANEL (unchanged) -->
+  <div class="market-panel" id="craftingPanel">
+    <aside class="trader-list">
+      <div class="panel-header"><h2>CATEGORIES</h2></div>
+      <div class="trader-list-body" id="craftCategoryBody"></div>
+    </aside>
+    <section class="craft-recipe-area">
+      <div class="craft-recipe-header">
+        <h3 id="craftCategoryTitle">SELECT A CATEGORY</h3>
+        <span class="craft-recipe-count" id="craftRecipeCount"></span>
+      </div>
+      <div class="craft-recipe-list" id="craftRecipeList"></div>
+    </section>
+  </div>
+</div>
+</div>
+    
+
+  </main>
+
+  <!-- ================= SWAP MODAL ================= -->
+  <div class="modal-backdrop" id="swapModal">
+    <div class="modal-window swap-window">
+      <div class="modal-header">
+        <span id="swapModalTitle">SWAP</span>
+        <button class="modal-close" id="swapModalClose">✕</button>
+      </div>
+      <div class="modal-body" id="swapModalBody"></div>
+    </div>
+  </div>
+
+    <!-- ================= GAME HOST (PixiJS mounts here) ================= -->
+  <div id="gameHost" style="display:none;"></div>
+
+  <!-- ================= IN-GAME INVENTORY OVERLAY ("I" toggles) ================= -->
+  <div id="gameInventoryOverlay" style="display:none;">
+    <div class="game-inv-panel">
+      <div class="game-inv-header">
+        <span id="gameInvTitle">SHIP CARGO</span>
+        <button id="gameInvClose">✕</button>
+      </div>
+      <div class="game-inv-body">
+        <div class="game-inv-cargo">
+          <div class="game-inv-section-title">SHIP CARGO</div>
+          <div id="gameInvGridHost"></div>
+        </div>
+        <div class="game-inv-network">
+          <div class="game-inv-network-header" id="gameInvPath">network/</div>
+          <div id="gameInvNetworkHost"></div>
+        </div>
+      </div>
+      <div class="game-inv-footer">Press <b>I</b> to close · Click servers to explore · Drag items to your ship</div>
+    </div>
+  </div>
+
+  <!-- ================= MAIN MENU ================= -->
+<div id="mainMenu" class="mainmenu-overlay">
+  <div class="mainmenu-logo"> 
+    <div class="mainmenu-title">AFTERNET</div>
+    <div class="mainmenu-subtitle">NET-INTRUDER PROTOCOL</div>
+  </div>
+  <div class="mainmenu-buttons">
+    <button class="mainmenu-btn" data-action="new">New Game</button>
+    <button class="mainmenu-btn" data-action="continue">Continue Latest</button>
+    <button class="mainmenu-btn" data-action="load">Load Game</button>
+    <button class="mainmenu-btn" data-action="achievements">Achievements</button>
+    <button class="mainmenu-btn" data-action="options">Options</button>
+  </div>
+  <div class="mainmenu-version">v0.4 · BUILD 2025</div>
+  <!-- ================= SAVE BROWSER MODAL ================= -->
+<div class="modal-backdrop" id="saveBrowserModal">
+  <div class="modal-window" style="width: 680px; max-width: 94vw;">
+    <div class="modal-header">
+      <span id="saveBrowserTitle">LOAD SAVE</span>
+      <button class="modal-close" data-close="saveBrowserModal">✕</button>
+    </div>
+    <div class="slot-list" id="slotListBody"></div>
+  </div>
+</div>
+</div>
+
+<!-- ================= GAME MODE MODAL ================= -->
+<div class="modal-backdrop" id="gameModeModal">
+  <div class="modal-window" style="width: 800px; max-width: 94vw;">
+    <div class="modal-header">
+      <span>SELECT MISSION TYPE</span>
+      <button class="modal-close" data-close="gameModeModal">✕</button>
+    </div>
+    <div class="gamemode-modal-body" id="gameModeBody"></div>
+  </div>
+</div>
+
+ <!-- ================= SECTOR SELECT MODAL ================= -->
+<div class="modal-backdrop" id="sectorSelectModal">
+  <div class="modal-window" style="width: 900px; max-width: 96vw;">
+    <div class="modal-header">
+      <span id="sectorSelectTitle">SELECT SECTOR — BREACH</span>
+      <button class="modal-close" data-close="sectorSelectModal">✕</button>
+    </div>
+    <div class="sector-grid" id="sectorGridBody"></div>
+    <div class="contracts-select-list" id="contractsSelectBody" style="display:none;"></div>
+    <div style="padding: 0 24px 20px; text-align: center; font-size: 11px; color: #5a636e; letter-spacing: 1px;">
+      Difficulty scales with sector tier.
+    </div>
+  </div>
+</div>
+
+<!-- ================= EXTRACTION RESULTS ================= -->
+  <div id="extractionResults" class="extraction-overlay" style="display:none;"></div>
+
+
+  <!-- ================= IN-GAME SIDEBAR ================= -->
+<div id="gameSidebar" class="game-sidebar" style="display:none;">
+  <button id="sidebarToggle" class="sidebar-toggle" title="Toggle">‹</button>
+  <div class="sidebar-content">
+    <div class="sidebar-header">TACTICAL</div>
+    <button id="openGateBtn" class="sidebar-gate-btn">OPEN GATE</button>
+    <div class="sidebar-stats">
+      <div class="sidebar-stat"><span>HP</span><span class="v" id="sbHp">—</span></div>
+      <div class="sidebar-stat"><span>THREAT</span><span class="v" id="sbThreat">—</span></div>
+      <div class="sidebar-stat"><span>SHIELD</span><span class="v" id="sbShield">—</span></div>
+      <div class="sidebar-stat"><span>SECTOR</span><span class="v" id="sbSector">—</span></div>
+      <div class="sidebar-stat"><span>POS</span><span class="v" id="sbPos">—</span></div>
+    </div>
+  </div>
+</div>
+
+  <div id="gameActionMenu" class="game-action-menu" style="display:none;">
+  <div class="game-action-header">ACTIONS</div>
+  <div class="game-action-list" id="gameActionList"></div>
+</div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

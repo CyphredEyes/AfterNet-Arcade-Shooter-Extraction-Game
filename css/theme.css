@@ -1,0 +1,692 @@
+/* ===================================================================
+   THEME — 60-30-10 color redesign
+   Loaded last. Overrides colors only. Zero layout changes.
+   =================================================================== */
+
+:root {
+  /* 60% — BASE / VOID */
+  --bg-void:       #05080c;      /* was #080b10 — deeper */
+  --bg-base:       #0a0f14;      /* was #0d1117 */
+  --bg-base-hi:    #0e141b;      /* was #11161e */
+
+  /* 30% — SURFACES / STRUCTURE */
+  --surface-low:   #131a24;      /* was #151a22 — noticeably lighter */
+  --surface-mid:   #1a212c;      /* was #1c222b */
+  --surface-high:  #232b38;      /* was #262d37 */
+  --recessed:      #070a0f;      /* was #0a0e13 */
+
+  --border-weak:   #1e2531;      /* was #1f252d */
+  --border-mid:    #2d3644;      /* was #2a3038 */
+  --border-strong: #414b5c;      /* was #3d4450 */
+
+  --text-hi:       #e6edf3;
+  --text-mid:      #8b949e;
+  --text-lo:       #5a636e;
+
+  /* 10% — ACCENT (unchanged — green is fine) */
+  --green:         #3fb950;
+  --green-hi:      #56d364;
+  --green-lo:      #238636;
+  --green-glow:    rgba(63, 185, 80, 0.35);
+  --green-tint:    rgba(63, 185, 80, 0.06);
+
+  /* 10% — SEMANTIC (unchanged) */
+  --red:           #f85149;
+  --red-glow:      rgba(248, 81, 73, 0.35);
+  --gold:          #d29922;
+  --gold-glow:     rgba(210, 153, 34, 0.35);
+  --cyan:          #6ee7ff;
+  --cyan-glow:     rgba(110, 231, 255, 0.35);
+  --purple:        #a371f7;
+  --purple-glow:   rgba(163, 113, 247, 0.35);
+}
+
+/* ================================================================
+   BODY / MAIN AREA
+   ================================================================ */
+body { background: var(--bg-void); color: var(--text-hi); }
+
+.game-container {
+  background: radial-gradient(circle at center, var(--bg-base-hi) 0%, var(--bg-void) 100%);
+}
+
+/* ================================================================
+   TOP NAV
+   ================================================================ */
+.top-nav {
+  background: var(--surface-low);
+  border-bottom: 1px solid var(--border-weak);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.7);
+}
+
+.logo { color: var(--green); text-shadow: 0 0 12px var(--green-glow); }
+
+.nav-btn { color: var(--text-mid); }
+.nav-btn:hover { color: var(--text-hi); }
+.nav-btn:hover::after { background-color: var(--border-strong); }
+.nav-btn.active { color: var(--green); }
+.nav-btn.active::after {
+  background-color: var(--green);
+  box-shadow: 0 0 10px var(--green-glow);
+}
+
+.currency-item {
+  background: var(--surface-mid);
+  border: 1px solid var(--border-weak);
+}
+.currency-amount { color: var(--text-hi); }
+
+/* ================================================================
+   PANELS / CARDS (hangar + storage + market sidebar)
+   ================================================================ */
+.hangar-pilot-panel,
+.hangar-ship-panel,
+.storage-section,
+.storage-fleet-panel,
+.trader-list,
+.trader-inventory {
+  background: var(--surface-low);
+  border: 1px solid var(--border-weak);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.55);
+}
+
+.panel-header,
+.storage-section-header { border-bottom: 1px solid var(--border-weak); }
+.panel-header h2,
+.storage-section-header h3 { color: var(--text-mid); }
+
+/* ================================================================
+   PILOT PANEL
+   ================================================================ */
+.avatar-circle {
+  background: var(--surface-mid);
+  border: 2px solid var(--border-mid);
+  color: var(--text-hi);
+}
+.pilot-avatar:hover .avatar-circle {
+  border-color: var(--green);
+  box-shadow: 0 0 15px var(--green-glow);
+}
+.pilot-name { color: var(--text-hi); }
+.pilot-rank { color: var(--text-mid); }
+
+.stat-label { color: var(--text-mid); }
+.stat-value { color: var(--text-hi); }
+.text-danger { color: var(--red); }
+.text-green  { color: var(--green); }
+
+/* ================================================================
+   PRIMARY CTA — the ONLY solid green surface in the app
+   ================================================================ */
+.ready-btn {
+  background: var(--green);
+  border: 1px solid var(--green);
+  color: var(--bg-void);
+  font-weight: 900;
+  letter-spacing: 3px;
+  transition: all .2s;
+}
+.ready-btn:hover {
+  background: var(--green-hi);
+  border-color: var(--green-hi);
+  box-shadow: 0 0 24px var(--green-glow);
+}
+.ready-btn:active {
+  background: var(--green-lo);
+  transform: translateY(1px);
+}
+
+/* ================================================================
+   SECONDARY BUTTONS
+   ================================================================ */
+.action-btn {
+  background: var(--surface-mid);
+  border: 1px solid var(--border-mid);
+  color: var(--text-hi);
+}
+.action-btn:hover {
+  border-color: var(--border-strong);
+  background: var(--surface-high);
+}
+.action-btn.primary {
+  border-color: var(--green);
+  color: var(--green);
+  background: transparent;
+}
+.action-btn.primary:hover {
+  background: var(--green-tint);
+  box-shadow: 0 0 12px var(--green-glow);
+}
+
+.swap-btn {
+  background: transparent;
+  border: 1px solid var(--border-mid);
+  color: var(--green);
+}
+.swap-btn:hover {
+  background: var(--green-tint);
+  border-color: var(--green);
+}
+
+/* ================================================================
+   INFO SLOTS + STATS
+   ================================================================ */
+.info-slot {
+  background: var(--surface-low);
+  border: 1px solid var(--border-weak);
+}
+.info-slot-header {
+  background: var(--surface-mid);
+  border-bottom: 1px solid var(--border-weak);
+  color: var(--text-mid);
+}
+.info-slot-name { color: var(--text-hi); }
+.empty-text { color: var(--text-lo); }
+
+.info-stats-block {
+  background: var(--surface-low);
+  border: 1px solid var(--border-weak);
+}
+.stats-grid .stat-row {
+  color: var(--text-mid);
+  border-bottom: 1px solid var(--border-weak);
+}
+.stats-grid .stat-row .val { color: var(--text-hi); }
+
+.info-ship-preview {
+  background: radial-gradient(circle at center, var(--green-tint), transparent 70%);
+  border: 1px dashed var(--border-weak);
+}
+.info-ship-preview .ship-placeholder { color: var(--border-strong); }
+
+/* ================================================================
+   STORAGE GRID HOST + INVENTORY GRID + ITEMS
+   ================================================================ */
+.grid-host {
+  background: var(--recessed);
+  border: 1px dashed var(--border-weak);
+}
+
+.grid {
+  background:
+    linear-gradient(90deg, var(--border-weak) 1px, transparent 1px),
+    linear-gradient(0deg,  var(--border-weak) 1px, transparent 1px),
+    var(--recessed);
+  background-size: var(--cell) var(--cell);   /* ← add this line */
+  border: 1px solid var(--border-mid);
+}
+
+.item {
+  background: transparent;
+  border: 2px solid var(--border-mid);
+}
+.item:hover {
+  border-color: var(--green);
+  box-shadow: 0 0 0 1px var(--green-tint), 0 2px 8px rgba(0,0,0,.55);
+}
+.item .name {
+  color: var(--text-hi);
+  background: linear-gradient(90deg, rgba(8,11,16,.85), rgba(8,11,16,.4) 80%, transparent);
+}
+.item .count {
+  color: var(--green);
+  background: rgba(8,11,16,.8);
+}
+.item .spin {
+  background: var(--green);
+  color: var(--bg-void);
+}
+
+/* Out-of-stock state */
+.grid .item.out-of-stock { opacity: .55; filter: grayscale(.7) brightness(.8); }
+.grid .item.out-of-stock:hover { opacity: .75; filter: grayscale(.4) brightness(1); }
+.grid .item.out-of-stock .oos-label {
+  background: rgba(74,10,10,.9);
+  border-color: var(--red);
+  color: #ff8080;
+  box-shadow: 0 0 10px var(--red-glow);
+}
+
+/* ================================================================
+   CONTEXT MENU
+   ================================================================ */
+.context-menu {
+  background: var(--surface-low);
+  border: 1px solid var(--border-mid);
+  box-shadow: 0 8px 24px rgba(0,0,0,.7);
+}
+.context-menu .ctx-item { color: var(--text-hi); }
+.context-menu .ctx-item:hover { background: var(--surface-high); }
+.context-menu .ctx-item.ctx-danger:hover {
+  background: rgba(248,81,73,.12);
+  color: var(--red);
+}
+
+/* ================================================================
+   MODALS
+   ================================================================ */
+.modal-window {
+  background: var(--surface-low);
+  border: 1px solid var(--border-mid);
+}
+.modal-header {
+  background: var(--surface-mid);
+  border-bottom: 1px solid var(--border-weak);
+  color: var(--green);
+}
+.modal-close { color: var(--text-mid); }
+.modal-close:hover {
+  background: rgba(248,81,73,.12);
+  color: var(--red);
+}
+
+.swap-window { background: var(--surface-low); }
+.swap-card {
+  background: var(--surface-mid);
+  border: 1px solid var(--border-mid);
+}
+.swap-card:hover {
+  border-color: var(--green);
+  background: var(--green-tint);
+}
+.swap-card-name { color: var(--text-hi); }
+.swap-card-sub  { color: var(--text-mid); }
+
+/* ================================================================
+   ITEM DESCRIPTION
+   ================================================================ */
+.popup-backdrop { background: rgba(5,7,10,.8); }
+.description-window {
+  background: var(--surface-low);
+  border: 1px solid var(--border-mid);
+}
+.description-window .popup-header {
+  background: var(--surface-mid);
+  border-bottom: 1px solid var(--border-weak);
+  color: var(--green);
+}
+.description-close { color: var(--text-mid); }
+.description-close:hover {
+  background: rgba(248,81,73,.1);
+  color: var(--red);
+}
+.description-values {
+  background: var(--bg-void);
+  border-top: 1px solid var(--border-weak);
+  border-bottom: 1px solid var(--border-weak);
+}
+.description-body { color: var(--text-mid); }
+
+/* ================================================================
+   MARKET — TABS
+   ================================================================ */
+.market-tabs { border-bottom: 1px solid var(--border-weak); }
+.market-tab { color: var(--text-mid); }
+.market-tab:hover { color: var(--text-hi); }
+.market-tab.active { color: var(--green); }
+.market-tab.active::after {
+  background: var(--green);
+  box-shadow: 0 0 10px var(--green-glow);
+}
+.market-tab[data-market="black"] { color: var(--text-lo); }
+.market-tab[data-market="black"]:hover { color: var(--text-mid); }
+.market-tab[data-market="black"].active { color: var(--red); }
+.market-tab[data-market="black"].active::after {
+  background: var(--red);
+  box-shadow: 0 0 10px var(--red-glow);
+}
+.tab-warning { color: var(--gold); }
+
+/* ================================================================
+   MARKET — TRADERS
+   ================================================================ */
+.trader-card {
+  background: var(--surface-mid);
+  border: 1px solid var(--border-weak);
+  border-left: 3px solid var(--border-mid);
+}
+.trader-card:hover {
+  border-left-color: var(--text-mid);
+  background: var(--surface-high);
+}
+.trader-card.active {
+  border-left-color: var(--green);
+  background: var(--green-tint);
+}
+.trader-card.active .trader-card-name { color: var(--green); }
+
+.trader-card-avatar {
+  background: var(--recessed);
+  border: 1px solid var(--border-mid);
+  color: var(--text-mid);
+}
+.trader-card.active .trader-card-avatar {
+  border-color: var(--green);
+  color: var(--green);
+}
+.trader-card-name { color: var(--text-hi); }
+.trader-card-sub  { color: var(--text-lo); }
+
+.trader-header {
+  background: var(--surface-mid);
+  border-bottom: 1px solid var(--border-weak);
+}
+.trader-avatar {
+  background: var(--recessed);
+  border: 1px solid var(--green);
+  color: var(--green);
+}
+.trader-header h3 { color: var(--text-hi); }
+.trader-tagline  { color: var(--text-mid); }
+.trader-header-right { color: var(--text-mid); }
+
+/* ================================================================
+   MARKET — ITEMS
+   ================================================================ */
+.market-item {
+  background: var(--surface-mid);
+  border: 1px solid var(--border-weak);
+}
+.market-item:hover { border-color: var(--border-strong); }
+.market-item-name { color: var(--text-hi); }
+.market-item-desc { color: var(--text-mid); }
+.market-item-img  { background: var(--recessed); border: 1px solid var(--border-mid); }
+
+.market-item-buy {
+  background: transparent;
+  border: 1px solid var(--green);
+  color: var(--green);
+}
+.market-item-buy:hover:not(:disabled) {
+  background: var(--green-tint);
+  box-shadow: 0 0 12px var(--green-glow);
+}
+.market-item-buy:disabled {
+  border-color: var(--border-mid);
+  color: var(--text-lo);
+}
+.market-item-buy.trade {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+.market-item-buy.trade:hover:not(:disabled) {
+  background: rgba(210,153,34,.12);
+  box-shadow: 0 0 12px var(--gold-glow);
+}
+
+/* ================================================================
+   BLACK MARKET
+   ================================================================ */
+#blackMarketPanel {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(248,81,73,.06), transparent 60%),
+    var(--bg-void);
+  border: 1px solid rgba(248,81,73,.3);
+}
+.blackmarket-banner {
+  border-bottom: 1px solid rgba(248,81,73,.3);
+  background: linear-gradient(180deg, rgba(248,81,73,.06), transparent);
+}
+.blackmarket-glyph        { color: var(--red); }
+.blackmarket-title        { color: var(--red); }
+.blackmarket-subtitle     { color: rgba(248,81,73,.65); }
+.blackmarket-timer-label  { color: rgba(248,81,73,.65); }
+.blackmarket-timer-value  { color: var(--red); }
+
+#blackMarketPanel .market-item {
+  background: var(--surface-low);
+  border-color: rgba(248,81,73,.2);
+}
+#blackMarketPanel .market-item:hover {
+  border-color: rgba(248,81,73,.4);
+  box-shadow: 0 0 12px rgba(248,81,73,.12);
+}
+#blackMarketPanel .market-item-buy {
+  border-color: var(--red);
+  color: var(--red);
+}
+#blackMarketPanel .market-item-buy:hover:not(:disabled) {
+  background: rgba(248,81,73,.12);
+  box-shadow: 0 0 12px var(--red-glow);
+}
+
+/* ================================================================
+   TOASTS + CURRENCY FLOAT
+   ================================================================ */
+.toast {
+  background: var(--surface-low);
+  border: 1px solid var(--border-mid);
+  color: var(--text-hi);
+}
+.toast-success { border-color: var(--green); color: var(--green); box-shadow: 0 0 16px var(--green-glow); }
+.toast-danger  { border-color: var(--red);   color: var(--red); }
+.toast-warning { border-color: var(--gold);  color: var(--gold); }
+.toast-info    { border-color: var(--cyan);  color: var(--cyan); }
+
+/* ================================================================
+   SAVE BROWSER
+   ================================================================ */
+.slot-card {
+  background: var(--surface-mid);
+  border: 1px solid var(--border-mid);
+}
+.slot-card:hover:not(.disabled) {
+  border-color: var(--green);
+  background: var(--green-tint);
+  box-shadow: 0 0 16px var(--green-glow);
+}
+.slot-name    { color: var(--text-hi); }
+.slot-preview { color: var(--text-mid); }
+.slot-stats   { color: var(--text-mid); }
+.slot-stats b { color: var(--text-hi); }
+.slot-meta    { color: var(--text-lo); }
+
+.slot-status.new       { color: var(--green); background: var(--green-tint); border-color: var(--green); }
+.slot-status.ready     { color: var(--cyan);  background: rgba(110,231,255,.1); border-color: var(--cyan); }
+.slot-status.overwrite { color: var(--gold);  background: rgba(210,153,34,.1); border-color: var(--gold); }
+.slot-status.empty     { color: var(--text-lo); border-color: var(--border-mid); }
+
+/* ================================================================
+   MAIN MENU
+   ================================================================ */
+.mainmenu-overlay {
+  background:
+    radial-gradient(circle at 50% 30%, rgba(63,185,80,.15), transparent 60%),
+    radial-gradient(circle at 20% 80%, rgba(110,231,255,.06), transparent 50%),
+    var(--bg-void);
+}
+.mainmenu-title {
+  color: var(--green);
+  text-shadow: 0 0 20px var(--green-glow), 0 0 60px rgba(63,185,80,.3);
+}
+.mainmenu-subtitle  { color: var(--text-lo); }
+.mainmenu-version   { color: var(--border-strong); }
+.mainmenu-btn {
+  background: var(--surface-low);
+  border: 1px solid var(--border-mid);
+  color: var(--text-hi);
+}
+.mainmenu-btn::before { background: var(--green); }
+.mainmenu-btn:hover {
+  border-color: var(--green);
+  background: var(--green-tint);
+  color: var(--green);
+  box-shadow: 0 0 24px var(--green-glow);
+}
+
+/* ================================================================
+   GAME MODE / SECTOR SELECT MODALS
+   ================================================================ */
+.gamemode-modal-body,
+.sector-grid {
+  background:
+    radial-gradient(circle at 50% 0%, var(--green-tint), transparent 70%),
+    var(--bg-base);
+}
+.gamemode-card,
+.sector-card {
+  background: var(--surface-low);
+  border: 2px solid var(--border-mid);
+}
+.gamemode-card:hover:not(.disabled) {
+  border-color: var(--green);
+  background: var(--green-tint);
+  box-shadow: 0 0 32px var(--green-glow);
+}
+.gamemode-card-icon { color: var(--text-lo); }
+.gamemode-card:hover:not(.disabled) .gamemode-card-icon { color: var(--green); }
+.gamemode-card-name { color: var(--text-hi); }
+.gamemode-card-desc { color: var(--text-mid); }
+
+.sector-card[data-tier="LOW"]     .sector-card-tier { color: var(--green); }
+.sector-card[data-tier="MID"]     .sector-card-tier { color: var(--gold); }
+.sector-card[data-tier="HIGH"]    .sector-card-tier { color: var(--red); }
+.sector-card[data-tier="EXTREME"] .sector-card-tier { color: var(--purple); }
+
+.sector-card[data-tier="LOW"]:hover     { border-color: var(--green);  box-shadow: 0 0 32px var(--green-glow); }
+.sector-card[data-tier="MID"]:hover     { border-color: var(--gold);   box-shadow: 0 0 32px var(--gold-glow); }
+.sector-card[data-tier="HIGH"]:hover    { border-color: var(--red);    box-shadow: 0 0 32px var(--red-glow); }
+.sector-card[data-tier="EXTREME"]:hover { border-color: var(--purple); box-shadow: 0 0 32px var(--purple-glow); }
+
+.sector-card-name { color: var(--text-hi); }
+.sector-card-desc { color: var(--text-mid); }
+
+/* ================================================================
+   EXTRACTION RESULTS
+   ================================================================ */
+.extraction-panel {
+  background: var(--surface-low);
+  border: 2px solid var(--green);
+  box-shadow: 0 0 80px var(--green-glow);
+}
+.extraction-header {
+  background: linear-gradient(180deg, var(--green-tint), transparent);
+  border-bottom: 1px solid var(--border-weak);
+}
+.extraction-title    { color: var(--green); }
+.extraction-subtitle { color: var(--text-mid); }
+.extraction-section-title { color: var(--text-mid); }
+.extraction-stats {
+  background: var(--bg-void);
+  border-top: 1px solid var(--border-weak);
+  border-bottom: 1px solid var(--border-weak);
+}
+.extraction-stat-label { color: var(--text-mid); }
+.extraction-stat-value { color: var(--text-hi); }
+.extraction-stat-value.credits { color: var(--green); }
+.extraction-stat-value.tokens  { color: var(--gold); }
+.extraction-stat-value.chips   { color: var(--purple); }
+.extraction-stat-value.count   { color: var(--cyan); }
+.extraction-btn {
+  background: transparent;
+  border: 1px solid var(--green);
+  color: var(--green);
+}
+.extraction-btn:hover {
+  background: var(--green-tint);
+  box-shadow: 0 0 24px var(--green-glow);
+}
+
+/* ================================================================
+   IN-GAME OVERLAYS
+   ================================================================ */
+.game-inv-panel,
+.game-loot-panel {
+  background: var(--bg-base);
+  border: 1px solid var(--green);
+  box-shadow: 0 0 40px var(--green-glow);
+}
+.game-inv-header,
+.game-loot-header {
+  border-bottom: 1px solid var(--border-mid);
+  color: var(--green);
+}
+.game-inv-header button,
+.game-loot-header button { color: var(--text-mid); }
+.game-inv-header button:hover,
+.game-loot-header button:hover { color: var(--red); }
+.game-inv-footer,
+.game-loot-footer {
+  border-top: 1px solid var(--border-mid);
+  color: var(--text-lo);
+}
+.game-inv-section-title,
+.game-loot-side-title { color: var(--text-lo); }
+.game-inv-network-header {
+  border-bottom: 1px solid var(--border-weak);
+  color: var(--text-mid);
+}
+
+/* File explorer */
+.loot-back {
+  background: var(--surface-mid);
+  border: 1px solid var(--border-mid);
+  color: var(--green);
+}
+.loot-back:hover { background: var(--surface-high); }
+.loot-crumb { color: var(--text-mid); }
+
+.loot-file-tile {
+  background: var(--surface-mid);
+  border: 1px solid var(--border-mid);
+}
+.loot-file-tile:hover {
+  border-color: var(--green);
+  background: var(--green-tint);
+}
+.loot-file-tile .tile-name { color: var(--text-hi); }
+.loot-file-tile.folder .tile-name { color: var(--cyan); }
+.loot-file-tile.blocked { opacity: .45; border-color: rgba(248,81,73,.2); }
+.loot-file-tile.blocked:hover { border-color: var(--red); background: rgba(248,81,73,.08); }
+
+.packet-secure { color: var(--red); }
+.packet-open   { color: var(--green); }
+.packet-unlock-btn {
+  background: var(--surface-mid);
+  border: 1px solid var(--gold);
+  color: var(--gold);
+}
+.packet-unlock-btn:hover { background: rgba(210,153,34,.12); }
+.packet-locked-msg {
+  color: rgba(248,81,73,.7);
+  background: rgba(248,81,73,.04);
+  border: 1px dashed rgba(248,81,73,.3);
+}
+
+/* Description market section */
+.description-market   { background: var(--bg-void); }
+.desc-qty-label      { color: var(--text-mid); }
+.desc-qty-control    { background: var(--surface-mid); border-color: var(--border-mid); }
+.desc-qty-btn        { color: var(--text-hi); }
+.desc-qty-btn:hover:not(:disabled) { background: var(--green-tint); color: var(--green); }
+.desc-qty-value      { color: var(--text-hi); border-color: var(--border-weak); }
+.desc-qty-max        { color: var(--text-lo); }
+.desc-price-row      { border-color: var(--border-weak); }
+.desc-price-label    { color: var(--text-mid); }
+.desc-price-value    { color: var(--text-hi); }
+.desc-requires-title { color: var(--gold); }
+.desc-req-name       { color: var(--text-hi); }
+.desc-req-have       { color: var(--green); }
+.desc-req-row.insufficient .desc-req-have { color: var(--red); }
+.desc-req-row.insufficient .desc-req-name { color: var(--text-lo); }
+.desc-buy-btn {
+  background: transparent;
+  border: 1px solid var(--green);
+  color: var(--green);
+}
+.desc-buy-btn:hover:not(:disabled) {
+  background: var(--green-tint);
+  box-shadow: 0 0 16px var(--green-glow);
+}
+.desc-buy-btn:disabled {
+  border-color: var(--border-mid);
+  color: var(--text-lo);
+}
+.desc-market-warn { color: var(--red); }
+
+/* Extraction and alert toasts */
+.desc-toast {
+  background: var(--surface-low);
+  border: 1px solid var(--red);
+  color: var(--red);
+}

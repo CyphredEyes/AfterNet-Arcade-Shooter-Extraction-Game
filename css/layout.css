@@ -1,0 +1,517 @@
+/* ===================================================================
+   LAYOUT - Top Navigation & Main Views
+   =================================================================== */
+
+.top-nav {
+  height: 60px; 
+  background: #13151a; 
+  border-bottom: 1px solid #21262d;
+  display: grid; 
+  grid-template-columns: 320px 1fr 320px; 
+  align-items: center; 
+  padding: 0 24px;
+  flex-shrink: 0; 
+  box-shadow: 0 4px 20px rgba(0,0,0,0.6); 
+  z-index: 10;
+}
+
+.nav-left { display: flex; align-items: center; }
+.logo { 
+  font-size: 20px; font-weight: 900; letter-spacing: 4px; 
+  color: #3fb950; text-shadow: 0 0 10px rgba(63, 185, 80, 0.2);
+}
+
+.nav-center { display: flex; justify-content: center; gap: 8px; }
+.nav-right { display: flex; justify-content: flex-end; align-items: center; gap: 20px; }
+
+.nav-btn {
+  position: relative;
+  background: transparent; border: none; color: #8b949e;
+  padding: 16px 20px; cursor: pointer; font-weight: 700;
+  letter-spacing: 1.5px; font-size: 12px; transition: color 0.25s ease;
+}
+
+.nav-btn::after {
+  content: ''; position: absolute; bottom: 0; left: 0;
+  width: 100%; height: 2px; background-color: #3fb950;
+  transform: scaleX(0); transform-origin: center; 
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-btn:hover { color: #c9d1d9; }
+.nav-btn:hover::after { transform: scaleX(1); background-color: #6a8c7a; }
+.nav-btn.active { color: #3fb950; }
+.nav-btn.active::after {
+  transform: scaleX(1); background-color: #3fb950; 
+  box-shadow: 0 0 10px rgba(63, 185, 80, 0.4);
+}
+
+/* ---------------- Main Container ---------------- */
+.game-container { 
+  flex: 1; position: relative; overflow: hidden; 
+  background: radial-gradient(circle at center, #15181e 0%, #0c0d10 100%); 
+}
+.view { display: none; height: 100%; width: 100%; }
+.view.active { display: flex; }
+
+/* ---------------- Hangar View ---------------- */
+#view-hangar { padding: 24px; gap: 24px; }
+
+.hangar-pilot-panel, .hangar-ship-panel {
+  background: #13151a; border: 1px solid #21262d; border-radius: 8px;
+  display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.hangar-pilot-panel { width: 320px; flex-shrink: 0; }
+.panel-header { padding: 16px 20px; border-bottom: 1px solid #21262d; }
+.panel-header h2 { font-size: 12px; color: #8b949e; letter-spacing: 2px; font-weight: 700; }
+
+.pilot-avatar {
+  padding: 30px 20px; display: flex; flex-direction: column; align-items: center;
+  border-bottom: 1px solid #21262d;
+}
+
+.avatar-circle {
+  width: 80px; height: 80px; border-radius: 50%;
+  background: #1c2128; border: 2px solid #30363d;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; font-weight: 900; color: #c9d1d9;
+  margin-bottom: 16px; transition: border-color 0.3s;
+}
+.pilot-avatar:hover .avatar-circle {
+  border-color: #3fb950; box-shadow: 0 0 15px rgba(63, 185, 80, 0.15);
+}
+
+.pilot-name { font-size: 18px; font-weight: 700; color: #e6edf3; }
+.pilot-rank { font-size: 12px; color: #8b949e; margin-top: 4px; letter-spacing: 1px; }
+.pilot-stats { padding: 20px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
+.stat-row { display: flex; justify-content: space-between; font-size: 13px; }
+.stat-label { color: #8b949e; }
+.stat-value { font-weight: 700; color: #c9d1d9; }
+.pilot-actions { padding: 20px; margin-top: auto; }
+
+.hangar-ship-panel { flex: 1; overflow: hidden; }
+.ship-showcase { flex: 1; display: flex; flex-direction: column; position: relative; }
+.ship-visual { flex: 1; display: flex; align-items: center; justify-content: center; }
+
+.ship-placeholder {
+  font-size: 32px; font-weight: 900; letter-spacing: 8px; color: #30363d;
+  border: 2px dashed #21262d; padding: 100px 60px; border-radius: 12px;
+}
+
+.ship-stats-bar {
+  height: 100px; background: #13151a; border-top: 1px solid #21262d;
+  display: flex; align-items: center; padding: 0 40px; gap: 40px;
+}
+.ship-stat { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+.ship-stat .label { font-size: 10px; color: #8b949e; letter-spacing: 1px; text-transform: uppercase; }
+.ship-stat .value { font-size: 12px; font-weight: 700; color: #c9d1d9; text-align: right; }
+
+.bar-bg { height: 6px; background: #1c2128; border-radius: 3px; overflow: hidden; border: 1px solid #21262d; }
+.bar-fill { height: 100%; border-radius: 3px; }
+.bar-fill.green { background: #3fb950; }
+.bar-fill.blue { background: #58a6ff; }
+.bar-fill.gold { background: #d29922; }
+
+/* ---------------- Storage View ---------------- */
+#view-storage { padding: 24px; gap: 24px; }
+
+.storage-fleet-panel {
+  width: 300px; flex-shrink: 0; background: #13151a; border: 1px solid #21262d;
+  border-radius: 8px; display: flex; flex-direction: column;
+}
+.fleet-list { padding: 16px; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; }
+
+.storage-grids-panel { flex: 1; display: flex; flex-direction: column; gap: 20px; overflow-y: auto; }
+.storage-section {
+  background: #13151a; border: 1px solid #21262d; border-radius: 8px;
+  padding: 16px; display: flex; flex-direction: column; gap: 16px;
+}
+.storage-section-header {
+  display: flex; justify-content: space-between; align-items: center;
+  border-bottom: 1px solid #21262d; padding-bottom: 12px;
+}
+.storage-section-header h3 { font-size: 14px; color: #8b949e; letter-spacing: 1.5px; text-transform: uppercase; }
+.header-actions { display: flex; gap: 12px; }
+
+.grid-host {
+  display: flex; justify-content: center; align-items: center;
+  min-height: 200px; background: #0c0d10; border-radius: 6px;
+  border: 1px dashed #21262d; padding: 20px;
+}
+
+/* ===================================================================
+   HANGAR - Information Systems
+   =================================================================== */
+
+.info-systems-host {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+}
+
+.info-slots-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.info-slot {
+  background: #0c0d10;
+  border: 1px solid #21262d;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.info-slot-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: #1c2128;
+  border-bottom: 1px solid #21262d;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: #8b949e;
+  font-weight: 700;
+}
+
+.swap-btn {
+  background: transparent;
+  border: 1px solid #30363d;
+  color: #3fb950;
+  padding: 2px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  transition: all 0.15s;
+}
+.swap-btn:hover { background: rgba(63, 185, 80, 0.1); }
+
+.info-slot-name {
+  font-size: 11px;
+  color: #c9d1d9;
+  text-align: center;
+  font-weight: 600;
+}
+
+.empty-text {
+  color: #30363d;
+  font-size: 11px;
+  letter-spacing: 2px;
+  font-weight: 700;
+}
+
+/* Stats Block */
+.info-stats-block {
+  background: #0c0d10;
+  border: 1px solid #21262d;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 24px;
+}
+
+.stats-grid .stat-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #8b949e;
+  border-bottom: 1px solid #1a1f25;
+  padding-bottom: 6px;
+}
+
+.stats-grid .stat-row .val {
+  color: #e6edf3;
+  font-weight: 700;
+  font-family: monospace;
+}
+
+/* Ship Preview */
+.info-ship-preview {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 160px;
+  border: 1px dashed #21262d;
+  border-radius: 8px;
+  background: radial-gradient(circle at center, rgba(63, 185, 80, 0.05), transparent 70%);
+}
+
+.info-ship-preview .ship-placeholder {
+  font-size: 24px;
+  letter-spacing: 6px;
+  color: #30363d;
+  font-weight: 900;
+}
+
+/* ===================================================================
+   HANGAR - Information Systems
+   =================================================================== */
+
+.info-systems-host {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+}
+
+.info-slots-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.info-slot {
+  background: #0c0d10;
+  border: 1px solid #21262d;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.info-slot-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: #1c2128;
+  border-bottom: 1px solid #21262d;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: #8b949e;
+  font-weight: 700;
+}
+
+.swap-btn {
+  background: transparent;
+  border: 1px solid #30363d;
+  color: #3fb950;
+  padding: 2px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  transition: all 0.15s;
+}
+.swap-btn:hover { background: rgba(63, 185, 80, 0.1); }
+
+.info-slot-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 200px;
+  min-height: 200px;
+  max-height: 200px;
+  border-left: 3px solid transparent;
+  overflow: hidden;
+}
+
+.info-slot-img {
+  width: 200px;
+  height: 200px;
+  max-width: 268px;
+  max-height: 268px;
+  object-fit:contain;
+  /* NO image-rendering: pixelated */
+  flex-shrink: 0;
+  padding-bottom: 25px;
+  padding-top: 25px;
+}
+
+.info-slot-name {
+  font-size: 11px;
+  color: #c9d1d9;
+  text-align: center;
+  font-weight: 600;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.empty-text {
+  color: #30363d;
+  font-size: 11px;
+  letter-spacing: 2px;
+  font-weight: 700;
+}
+
+/* Stats Block */
+.info-stats-block {
+  background: #0c0d10;
+  border: 1px solid #21262d;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 24px;
+}
+
+.stats-grid .stat-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #8b949e;
+  border-bottom: 1px solid #1a1f25;
+  padding-bottom: 6px;
+}
+
+.stats-grid .stat-row .val {
+  color: #e6edf3;
+  font-weight: 700;
+  font-family: monospace;
+}
+
+/* Ship Preview */
+.info-ship-preview {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 160px;
+  border: 1px dashed #21262d;
+  border-radius: 8px;
+  background: radial-gradient(circle at center, rgba(63, 185, 80, 0.05), transparent 70%);
+}
+
+.info-ship-preview .ship-placeholder {
+  font-size: 24px;
+  letter-spacing: 6px;
+  color: #30363d;
+  font-weight: 900;
+}
+
+/* ===================================================================
+   Storage — Loadout two-column layout (Console | CD Cargo)
+   =================================================================== */
+.loadout-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  min-height: 240px;
+}
+
+.loadout-column {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 0;
+}
+
+.loadout-column-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--text-mid, #8b949e);
+  padding: 4px 4px 6px;
+  border-bottom: 1px solid var(--border-weak, #21262d);
+  text-transform: uppercase;
+  min-height: 32px;
+}
+
+.loadout-column-title > span {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.loadout-column-actions {
+  display: flex;
+  gap: 4px;
+  flex: 0 0 auto;
+}
+
+.loadout-column-actions .action-btn {
+  padding: 3px 8px;
+  font-size: 9px;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+
+.loadout-column-body {
+  flex: 1;
+  min-height: 220px;
+  background: var(--recessed, #0c0d10);
+  border: 1px dashed var(--border-weak, #21262d);
+  border-radius: 6px;
+  padding: 12px;
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Make grid hosts transparent to layout — their children get centered
+   directly by the flex parent above. Keeps the DOM ids for JS mounting. */
+#consoleGridHost,
+#shipGridHost {
+  display: contents;
+}
+
+/* Console slot grid — packs compactly, wraps based on available width */
+.console-slots-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-start;
+  align-items: flex-start;
+  align-content: flex-start;
+  max-width: 100%;
+}
+
+.console-slot-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 0 0 auto;
+}
+
+.console-slot-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  color: var(--text-mid, #8b949e);
+  text-transform: uppercase;
+}
+
+/* Ship preview — image when available, text placeholder otherwise */
+.ship-preview-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 16px var(--green-glow, rgba(63, 185, 80, 0.35)));
+  animation: shipPreviewIn 0.5s ease-out;
+}
+
+@keyframes shipPreviewIn {
+  from { opacity: 0; transform: translateY(8px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}

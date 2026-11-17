@@ -1,0 +1,78 @@
+Here is a complete technical breakdown of how your current codebase and systems work together. I have analyzed the data flow, the UI rendering, and the core mechanics of the Grid Engine. I have not modified any code.
+
+### 1. High-Level Architecture
+Your project follows a modular architecture:
+*   **`main.js`**: The bootstrapper. It seeds the initial state (ships, stash items) and sets up the Top Navigation tab logic.
+*   **`state.js`**: The single source of truth. It holds the `stash` inventory, the `ships` array, and tracks the `activeShipId`.
+*   **`data/itemDB.js`**: The data dictionary. It defines blueprints and uses `makeItem()` to factory-generate item instances with unique IDs.
+*   **`systems/grid-core.js`**: The engine. It knows nothing about "Ships" or "Stashes"—it only knows how to draw generic inventories and handle mouse interactions.
+*   **`systems/grid-organize.js`**: The utility. It takes an inventory, calculates the best packing order, and rewrites the item coordinates.
+*   **`ui/storage.js`**: The bridge. It connects `state.js` to `grid-core.js` by creating the DOM layout and mounting the grids.
+*   **`ui/containerWindow.js`**: The floating window manager for nested containers.
+
+---
+
+### 2. How the GRID System Works (The Core Engine)
+The Grid system is entirely event-driven and relies on absolute pixel positioning. 
+
+#### The Data Model
+An inventory is a simple JS object: `{ cols, rows, items: [] }`.
+An item is `{ id, key, w, h, col, row, rotated, count, ... }`. 
+*   `w` and `h` are the item's base size (e.g., a Rifle is `w:1, h:4`).
+*   If `rotated: true`, the engine swaps them on the fly using `itemDims()`.
+
+#### The Registry
+When a grid is rendered, it is registered in a global `Map` called `registry`.
+*   **Key**: `gridId` (e.g., `'stash-grid'` or `ship-grid-1`).
+*   **Value**: `{ inventory, el }` (the data object and the actual DOM wrapper).
+This registry allows the engine to instantly find the data object just by knowing which DOM element the mouse is over.
+
+#### Drag & Drop Lifecycle
+1.  **`beginDrag`**: When you `mousedown` on an item, the engine saves the item's original state (`orig`), removes it from the grid's DOM, and creates a "Ghost" item appended directly to `<body>`. The ghost follows the mouse exactly using `position: fixed`.
+2.  **`onDragMove`**: Updates the ghost's `top`/`left` CSS properties. It also calls `hitTestGrids` to see which grid is under the cursor and draws green/red highlight `.cell` overlays to show if the current spot is valid.
+3.  **`onDragEnd`**: This is the brain. It calculates which cell the mouse is hovering over (`Math.round`). It then runs a sequence of checks:
+    *   *Is it a merge?* (Same item key, stackable).
+    *   *Is it a container drop?* (Dropping onto a toolbox).
+    *   *Is it valid?* (`inBounds` and `!overlaps`).
+    *   If successful, it splices the item from the old inventory, pushes it to the new one, and re-renders **both** grids.
+
+#### Rotation & The Ghost
+When you press `R`, `rotateGhost` flips `item.rotated`. Because the ghost's width/height swap instantly, the engine recalculates the `grabOffset` so the item rotates visually around the mouse cursor without snapping to a corner.
+
+---
+
+### 3. How Containers & Nested Grids Work
+Containers (like Toolboxes or Lockboxes) are items that have an `internalCols`, `internalRows`, and an `internalItems` array.
+
+*   **Right-Click Menu**: The engine checks if `item.internalItems` exists. If so, it shows the "Open" button.
+*   **Floating Windows**: `containerWindow.js` creates a brand new DOM element, mounts a **new** grid inside it (e.g., `gridId: 'container-12'`), and makes the header draggable. 
+*   **Auto-Storing**: If you drop an item *onto* a container in the main grid, `onDragEnd` intercepts it. It calls `canPlaceInside()` to check rules. If valid, it automatically finds an empty spot in the container's `internalItems` and places it there without opening the window.
+*   **Pointer Events Trick**: The floating container window has `pointer-events: none` on its frame, but `pointer-events: auto` on its header and grid. This allows you to drag items *through* the empty space of the floating window and drop them on the grid underneath it.
+
+---
+
+### 4. The Lock System
+Containers can have a `lockType` (e.g., `'key'`) and a `requiredKey` (e.g., `'blue_key'`).
+*   When you click "Unlock", `findKeyInGrids()` searches every registered grid for an item with the matching key.
+*   If found, it splices (destroys) the key from its inventory, sets `locked = false`, and forces a repaint of both the key's grid and the container's grid.
+
+---
+
+### 5. The Organize System
+`grid-organize.js` is a standalone algorithm that operates directly on the inventory data object.
+1.  **Merge**: It groups all items by `key` and combines their `counts` up to the `stackMax`.
+2.  **Sort**: It sorts the combined stacks by **Category -> Key -> Tags**. This guarantees that all medical items are together, all weapons are together, and identical items are side-by-side.
+3.  **Pack**: It creates a 2D boolean array (`grid`) representing the inventory. It uses a greedy row-by-row scan (`for r` then `for c`) to find the first available space for each stack. It tries the item's current rotation first, then the opposite.
+4.  **Commit**: It generates brand new `makeItem()` instances based on the new coordinates, carefully carrying over `internalItems` so nested containers aren't wiped out.
+
+---
+
+### 6. UI Flow (How they connect)
+1.  You click the **Storage** tab.
+2.  `main.js` catches the click, sets the active view, and calls `renderStorage()` from `storage.js`.
+3.  `storage.js` reads `state.js` (which has your ships and stash).
+4.  It builds the Fleet List HTML.
+5.  It calls `mountGrid()` from `grid-core.js` three times: once for the selected ship's cargo, once for the stash, and (if opened) once for a container.
+6.  `grid-core.js` takes over, drawing the cells, items, and listening for mouse events.
+
+This architecture is extremely robust because **the engine doesn't care what the grid represents**. You can use it for a ship's cargo, a base stash, a dead enemy's pockets, or a merchant's inventory—it all just works as long as you pass it an object with `cols`, `rows`, and `items`.

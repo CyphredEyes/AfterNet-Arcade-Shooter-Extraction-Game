@@ -1,0 +1,714 @@
+/* ===================================================================
+   BASE - Resets, Typography, Global Variables
+   =================================================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  user-select: none;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  background: #0c0d10;
+  color: #c9d1d9;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Global Text Colors */
+.text-danger { color: #f85149; }
+.text-green { color: #3fb950; }
+
+/* Custom Scrollbars */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #0c0d10; }
+::-webkit-scrollbar-thumb { background: #30363d; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #8b949e; }
+
+/* Utility */
+.empty-msg {
+  color: #5a636e;
+  font-size: 12px;
+  text-align: center;
+  padding: 20px;
+  font-style: italic;
+}
+
+/* ===================================================================
+   GAME RUNTIME
+   =================================================================== */
+
+canvas {
+  display: block;
+  cursor: crosshair;
+}
+
+#gameHost {
+  position: fixed;
+  inset: 0;
+  background: #05060a;
+  z-index: 500;
+}
+
+/* ===================================================================
+   IN-GAME INVENTORY OVERLAY
+   The overlay centers a full-height panel; the panel is a flex column
+   whose middle row (`game-inv-body`) owns the layout, and each side
+   owns its own scroll host. No nested overflow. No duplicate rules.
+   =================================================================== */
+
+#gameInventoryOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  backdrop-filter: blur(2px);
+}
+
+.game-inv-panel {
+  width: 94vw;
+  max-width: 1600px;
+  height: 92vh;
+  max-height: 92vh;
+
+  background: #0d1015;
+  border: 1px solid #3fb950;
+  border-radius: 6px;
+  box-shadow: 0 0 40px rgba(63, 185, 80, 0.25);
+
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.game-inv-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  border-bottom: 1px solid #30363d;
+  font-size: 12px;
+  letter-spacing: 2px;
+  font-weight: 700;
+  color: #3fb950;
+}
+
+.game-inv-header button {
+  background: transparent;
+  border: none;
+  color: #8b949e;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.game-inv-header button:hover { color: #f85149; }
+
+/* Middle row — flex row, no scroll of its own */
+.game-inv-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  gap: 24px;
+  padding: 20px 32px;
+  overflow: hidden;
+}
+
+/* LEFT — ship cargo */
+.game-inv-cargo {
+  flex-shrink: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* RIGHT — network explorer */
+.game-inv-network {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Scroll hosts — the ONLY place scrolling happens */
+#gameInvGridHost {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 4px;
+}
+
+#gameInvNetworkHost {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+/* Section labels + breadcrumb */
+.game-inv-section-title {
+  font-size: 10px;
+  letter-spacing: 2px;
+  font-weight: 700;
+  color: #6b7785;
+  text-align: center;
+  padding: 4px 0;
+}
+
+.game-inv-network-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-bottom: 1px solid #21262d;
+  min-height: 30px;
+  font-family: monospace;
+  font-size: 11px;
+  color: #8b949e;
+}
+
+.game-inv-footer {
+  flex-shrink: 0;
+  padding: 10px 24px;
+  border-top: 1px solid #30363d;
+  font-size: 10px;
+  color: #6b7785;
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+.game-inv-footer b { color: #3fb950; }
+
+/* ===================================================================
+   FILE EXPLORER TILES (used by spoils / packets / nodes views)
+   =================================================================== */
+
+.loot-back {
+  background: #1c2128;
+  border: 1px solid #30363d;
+  color: #3fb950;
+  padding: 2px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+  margin-right: 8px;
+  font-weight: 900;
+  font-size: 12px;
+}
+
+.loot-back:hover { background: #24292f; }
+
+.loot-crumb {
+  font-family: monospace;
+  font-size: 11px;
+  color: #8b949e;
+  letter-spacing: 0.5px;
+}
+
+.loot-file-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 10px;
+  padding: 12px;
+}
+
+.loot-file-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 10px;
+  background: #13151a;
+  border: 1px solid #30363d;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  text-align: center;
+  min-height: 90px;
+}
+
+.loot-file-tile:hover {
+  border-color: #3fb950;
+  background: #1a2e1c;
+}
+
+.loot-file-tile .tile-icon {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.loot-file-tile .tile-name {
+  font-size: 11px;
+  color: #c9d1d9;
+  word-break: break-word;
+  font-family: monospace;
+}
+
+.loot-file-tile.folder .tile-name { color: #58a6ff; }
+
+.loot-empty {
+  grid-column: 1 / -1;
+  padding: 24px;
+  text-align: center;
+  color: #5a636e;
+  font-size: 12px;
+  font-style: italic;
+}
+
+.loot-file-tile.blocked {
+  opacity: 0.45;
+  border-color: #3a2a2a;
+  cursor: not-allowed;
+}
+
+.loot-file-tile.blocked:hover {
+  border-color: #f85149;
+  background: #1a0808;
+}
+
+.loot-file-tile.blocked .tile-name { color: #8b6a6a; }
+
+.loot-toast {
+  position: fixed;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #13151a;
+  border: 1px solid #f85149;
+  color: #f85149;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 12px;
+  z-index: 20000;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+/* ===================================================================
+   LEGACY — dead code kept for compatibility
+   Nothing in the current build references #gameLootOverlay, but
+   leaving it intact costs nothing and protects against re-introduction.
+   =================================================================== */
+
+#gameLootOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  backdrop-filter: blur(2px);
+}
+
+.game-loot-panel {
+  background: #0d1015;
+  border: 1px solid #3fb950;
+  border-radius: 6px;
+  box-shadow: 0 0 40px rgba(63, 185, 80, 0.25);
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+  max-width: 95vw;
+}
+
+.game-loot-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-bottom: 1px solid #30363d;
+  font-size: 12px;
+  letter-spacing: 2px;
+  font-weight: 700;
+  color: #3fb950;
+}
+
+.game-loot-header button {
+  background: transparent;
+  border: none;
+  color: #8b949e;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.game-loot-header button:hover { color: #f85149; }
+
+.game-loot-grids {
+  display: flex;
+  gap: 20px;
+  padding: 16px;
+  overflow: auto;
+}
+
+.game-loot-side {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.game-loot-side-title {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: #6b7785;
+  font-weight: 700;
+  text-align: center;
+}
+
+.game-loot-footer {
+  padding: 8px 16px;
+  border-top: 1px solid #30363d;
+  font-size: 10px;
+  color: #6b7785;
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+.game-loot-footer b { color: #3fb950; }
+
+.game-loot-explorer { min-width: 480px; }
+
+.loot-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #30363d 20%, #30363d 80%, transparent);
+  margin: 14px 12px;
+}
+
+.loot-folder-grid {
+  padding: 0 12px 16px;
+  display: flex;
+  justify-content: center;
+}
+
+/* ===================================================================
+   LEGACY — network panel styles (networkPanel.js, deprecated)
+   =================================================================== */
+
+.inv-net-group {
+  background: #13151a;
+  border: 1px solid #30363d;
+  border-radius: 4px;
+  padding: 8px;
+  margin-bottom: 8px;
+}
+
+.inv-net-group-header {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #3fb950;
+  padding: 4px 6px;
+  border-bottom: 1px solid #21262d;
+  margin-bottom: 6px;
+}
+
+.inv-net-server {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 8px;
+  font-size: 11px;
+  border-radius: 3px;
+  margin-bottom: 3px;
+  cursor: pointer;
+  font-family: monospace;
+}
+
+.inv-net-server.down    { background: rgba(63, 185, 80, 0.1);  border: 1px solid #3fb950; color: #3fb950; }
+.inv-net-server.exposed { background: rgba(210, 153, 34, 0.1); border: 1px solid #d29922; color: #d29922; }
+.inv-net-server.blocked {
+  background: rgba(139, 148, 158, 0.05);
+  border: 1px solid #30363d;
+  color: #5a636e;
+  cursor: not-allowed;
+}
+
+.inv-net-server:not(.blocked):hover { filter: brightness(1.2); }
+.inv-net-server-state { font-weight: 700; font-size: 10px; letter-spacing: 0.5px; }
+
+.inv-net-empty {
+  padding: 20px;
+  text-align: center;
+  color: #5a636e;
+  font-size: 11px;
+  font-style: italic;
+}
+
+/* ===================================================================
+   LEGACY — packet view styles (partly still used)
+   =================================================================== */
+
+.packet-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 12px;
+  margin: 0 12px;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  font-weight: 700;
+}
+
+.packet-secure { color: #f85149; }
+.packet-open   { color: #3fb950; }
+
+.packet-unlock-btn {
+  background: #1c2128;
+  border: 1px solid #d29922;
+  color: #d29922;
+  padding: 4px 10px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  text-transform: none;
+}
+
+.packet-unlock-btn:hover { background: rgba(210, 153, 34, 0.15); }
+
+.packet-grid-wrap {
+  padding: 6px 12px;
+  display: flex;
+  justify-content: center;
+}
+
+.packet-locked-msg {
+  padding: 24px;
+  text-align: center;
+  color: #8b6a6a;
+  font-family: monospace;
+  font-size: 12px;
+  background: rgba(248, 81, 73, 0.05);
+  border: 1px dashed #4a2020;
+  border-radius: 4px;
+}
+
+.loot-file-tile.insecure { border-color: #f85149; }
+.loot-file-tile.insecure .tile-name { color: #f85149; }
+
+/* In-game contextual action menu (bottom-center) */
+.game-action-menu {
+  position: fixed;
+  bottom: 40px;
+  left: 60px;
+  background: rgba(13, 16, 21, 0.95);
+  border: 1px solid var(--green, #3fb950);
+  border-radius: 6px;
+  padding: 6px;
+  z-index: 950;
+  box-shadow: 0 0 20px rgba(63, 185, 80, 0.25);
+  font-family: var(--font-ui, monospace);
+  max-width: 360px;
+}
+.game-action-list { display: flex; flex-direction: column; gap: 4px; }
+.game-action-btn {
+  background: transparent;
+  border: 1px solid #30363d;
+  color: #c9d1d9;
+  padding: 8px 14px;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.game-action-btn:hover:not(:disabled) {
+  background: rgba(63, 185, 80, 0.12);
+  border-color: #3fb950;
+  color: #3fb950;
+}
+.game-action-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.game-action-btn .hk { float: right; color: #6b7785; font-size: 10px; margin-left: 12px; }
+.game-action-btn .reason { font-size: 10px; color: #5a636e; margin-top: 2px; }
+
+/* ===================================================================
+   In-game sidebar
+   =================================================================== */
+.game-sidebar {
+  position: fixed;
+  top: 80px;
+  left: 0;
+  height: auto;
+  max-height: 380px;
+  background: rgba(13, 16, 21, 0.94);
+  border: 1px solid var(--border-mid, #30363d);
+  border-left: none;
+  border-radius: 0 6px 6px 0;
+  z-index: 900;
+  display: flex;
+  transition: width 0.22s ease;
+  font-family: var(--font-ui, monospace);
+  overflow: hidden;
+  width: 240px;
+}
+
+.game-sidebar.collapsed {
+  width: 34px;
+}
+
+.sidebar-toggle {
+  width: 34px;
+  height: 40px;
+  background: rgba(63, 185, 80, 0.08);
+  border: none;
+  border-right: 1px solid var(--border-mid, #30363d);
+  color: var(--green, #3fb950);
+  font-size: 18px;
+  font-weight: 900;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+.sidebar-toggle:hover { background: rgba(63, 185, 80, 0.2); }
+
+.sidebar-content {
+  flex: 1;
+  min-width: 200px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow: hidden;
+}
+
+.sidebar-header {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--text-mid, #8b949e);
+  font-weight: 700;
+  border-bottom: 1px solid var(--border-weak, #21262d);
+  padding-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.sidebar-gate-btn {
+  background: transparent;
+  border: 1px solid var(--cyan, #6ee7ff);
+  color: var(--cyan, #6ee7ff);
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.sidebar-gate-btn:hover:not(:disabled) {
+  background: rgba(110, 231, 255, 0.12);
+  box-shadow: 0 0 12px rgba(110, 231, 255, 0.3);
+}
+.sidebar-gate-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.sidebar-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.sidebar-stat {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--text-mid, #8b949e);
+  letter-spacing: 1px;
+}
+.sidebar-stat .v {
+  color: var(--text-hi, #e6edf3);
+  font-weight: 700;
+  font-family: monospace;
+}
+
+/* ===================================================================
+   Action menu — left side panel (bottom-left), sidebar-styled
+   =================================================================== */
+.game-action-menu {
+  position: fixed;
+  bottom: 24px;
+  left: 0;
+  width: 240px;
+  max-height: 340px;
+  background: rgba(13, 16, 21, 0.94);
+  border: 1px solid var(--border-mid, #30363d);
+  border-left: none;
+  border-radius: 0 6px 6px 0;
+  z-index: 950;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: var(--font-ui, monospace);
+  box-shadow: 0 0 20px rgba(63, 185, 80, 0.15);
+}
+
+.game-action-header {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--text-mid, #8b949e);
+  font-weight: 700;
+  padding: 12px 14px 6px;
+  border-bottom: 1px solid var(--border-weak, #21262d);
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.game-action-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.game-action-btn {
+  background: transparent;
+  border: 1px solid var(--border-mid, #30363d);
+  color: var(--text-hi, #c9d1d9);
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.12s;
+  white-space: normal;
+}
+.game-action-btn:hover:not(:disabled) {
+  background: rgba(63, 185, 80, 0.12);
+  border-color: var(--green, #3fb950);
+  color: var(--green, #3fb950);
+}
+.game-action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.game-action-empty {
+  padding: 10px 4px;
+  color: var(--text-lo, #5a636e);
+  font-size: 11px;
+  font-style: italic;
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+.game-action-btn--locked {
+  border-color: var(--red, #f85149) !important;
+  color: var(--red, #f85149) !important;
+}

@@ -1,0 +1,99 @@
+/* ===================================================================
+   GRID INVENTORY ENGINE
+   =================================================================== */
+
+.grid {
+  position: relative;
+  background: linear-gradient(90deg, #1e242b 1px, transparent 1px), linear-gradient(0deg, #1e242b 1px, transparent 1px), #101317;
+  background-size: var(--cell) var(--cell);
+  border: 1px solid #21262d; 
+  border-radius: 4px;
+  margin: 0 auto;
+}
+
+/* Highlight cells */
+.cell { 
+  position: absolute; width: var(--cell); height: var(--cell); box-sizing: border-box; 
+  border: 1px solid transparent; pointer-events: none; transition: background .08s, border-color .08s; 
+}
+.cell.valid { background: rgba(63, 185, 80, .18); border-color: rgba(63, 185, 80, .35); }
+.cell.invalid { background: rgba(248, 81, 73, .20); border-color: rgba(248, 81, 73, .45); }
+
+/* Items */
+.item {
+  position: absolute; 
+  background: #13151a;
+  border: 2px solid #30363d;
+  border-radius: 3px; 
+  cursor: grab; 
+  overflow: hidden;
+  display: flex; 
+  flex-direction: column; 
+  justify-content: flex-end;
+  transition: box-shadow .12s, border-color .12s, transform .05s;
+}
+
+.item:hover { border-color: #8b949e; box-shadow: 0 0 0 1px rgba(63, 185, 80, .25), 0 2px 8px rgba(0, 0, 0, .5); }
+.item.dragging { 
+  position: fixed !important; cursor: grabbing; opacity: .95; z-index: 10000; pointer-events: none; 
+  box-shadow: 0 12px 32px rgba(0, 0, 0, .8), 0 0 0 2px rgba(63, 185, 80, .7); transform: scale(1.04); 
+}
+
+.item img { 
+  position: absolute; inset: 0; right: auto; bottom: auto; width: 100%; height: 100%; 
+  object-fit: contain; opacity: .85; pointer-events: none; transition: opacity .12s; 
+}
+
+.item .name { 
+  position: relative; z-index: 2; font-size: 10px; font-weight: 600; color: #e6edf3; 
+  padding: 2px 5px; background: linear-gradient(90deg, rgba(0, 0, 0, .75), rgba(0, 0, 0, .35) 80%, transparent); 
+  letter-spacing: .4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+  pointer-events: none; text-shadow: 0 1px 2px #000; 
+}
+
+.item .count { 
+  position: absolute; bottom: 3px; right: 4px; font-size: 10px; font-weight: 800; color: #3fb950; 
+  background: rgba(0, 0, 0, .7); padding: 1px 5px; border-radius: 3px; z-index: 3; pointer-events: none; text-shadow: 0 1px 2px #000; 
+}
+
+.item .spin { 
+  position: absolute; top: 3px; left: 4px; width: 16px; height: 16px; background: rgba(63, 185, 80, .85); 
+  color: #0c0d10; border-radius: 50%; font-size: 11px; font-weight: 900; display: none; 
+  align-items: center; justify-content: center; cursor: pointer; z-index: 3; line-height: 1; 
+}
+.item:hover .spin { display: flex; }
+
+/* Context Menu */
+.context-menu { 
+  position: fixed; min-width: 160px; background: #13151a; border: 1px solid #30363d; 
+  border-radius: 4px; box-shadow: 0 8px 24px rgba(0, 0, 0, .7); padding: 4px; 
+  z-index: 100000; display: flex; flex-direction: column; gap: 2px; 
+}
+
+.context-menu .ctx-item { 
+  background: transparent; border: none; color: #c9d1d9; text-align: left; padding: 8px 12px; 
+  font-size: 12px; font-family: inherit; letter-spacing: .5px; cursor: pointer; border-radius: 3px; 
+}
+
+.context-menu .ctx-item:hover { background: #21262d; }
+.context-menu .ctx-item.ctx-danger:hover { background: rgba(248, 81, 73, .15); color: #f85149; }
+
+/* CD Blocked label (shown while equipped with cargo) */
+.item .cd-blocked-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-15deg);
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 3px;
+  color: #f85149;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 4px 12px;
+  border: 2px solid #f85149;
+  border-radius: 4px;
+  z-index: 5;
+  text-shadow: 0 0 8px rgba(248, 81, 73, 0.8);
+  pointer-events: none;
+  box-shadow: 0 0 20px rgba(248, 81, 73, 0.4);
+}
